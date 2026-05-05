@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: jenkins-agent
+    app: node_app
 
 spec:
   serviceAccountName: jenkins
@@ -10,7 +10,7 @@ spec:
   containers:
   # 🔹 Node container (frontend build)
   - name: node
-    image: node:18
+    image: 172.31.42.17:32000/node:18
     command:
       - cat
     tty: true
@@ -18,7 +18,7 @@ spec:
 
   # 🔹 Docker container (image build)
   - name: docker
-    image: docker:24-dind
+    image: 172.31.42.17:32000/docker:24
     securityContext:
       privileged: true
     command:
@@ -31,14 +31,29 @@ spec:
 
   # 🔹 Kubectl container (deployment)
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: 172.31.42.17:32000/kubectl:1
     command:
       - cat
     tty: true
     workingDir: /home/jenkins/agent
 
+  - name: trivy
+    image: 172.31.42.17:32000/trivy:0.55.0
+    command:
+      - cat
+    tty: true
+    workingDir: /home/jenkins/agent
+
+  - name: zap
+    image: 172.31.42.17:32000/zaproxy:stable
+    command:
+      - cat
+    tty: true
+    workingDir: /home/jenkins/agent
+  
+
   # 🔹 Volumes (shared workspace + docker socket)
   volumes:
     - name: docker-sock
       hostPath:
-        path: /var/run/docker.sock
+        path: /run/docker.sock
