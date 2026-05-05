@@ -2,19 +2,19 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: app1-build-pod
+    app: jenkins-agent
 
 spec:
   serviceAccountName: jenkins
 
   containers:
-
   # 🔹 Node container (frontend build)
   - name: node
     image: node:18
     command:
       - cat
     tty: true
+    workingDir: /home/jenkins/agent
 
   # 🔹 Docker container (image build)
   - name: docker
@@ -24,6 +24,7 @@ spec:
     command:
       - dockerd-entrypoint.sh
     tty: true
+    workingDir: /home/jenkins/agent
     volumeMounts:
       - name: docker-sock
         mountPath: /var/run/docker.sock
@@ -34,9 +35,10 @@ spec:
     command:
       - cat
     tty: true
+    workingDir: /home/jenkins/agent
 
-  # 🔹 Workspace volume
+  # 🔹 Volumes (shared workspace + docker socket)
   volumes:
     - name: docker-sock
       hostPath:
-        path: /run/docker.sock
+        path: /var/run/docker.sock
