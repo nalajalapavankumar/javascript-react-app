@@ -8,51 +8,46 @@ spec:
   serviceAccountName: jenkins
 
   containers:
-  # 🔹 Node container (frontend build)
+
+  # 🔹 Node container
   - name: node
     image: 172.31.42.17:32000/node:18
-    command:
-      - cat
+    command: ['cat']
     tty: true
     workingDir: /home/jenkins/agent
 
-  # 🔹 Docker container (image build)
+  # 🔹 Docker CLI container
   - name: docker
     image: 172.31.42.17:32000/docker:24
-    securityContext:
-      privileged: true
-    command:
-      - dockerd-entrypoint.sh
+    command: ['cat']
     tty: true
     workingDir: /home/jenkins/agent
     volumeMounts:
       - name: docker-sock
         mountPath: /var/run/docker.sock
 
-  # 🔹 Kubectl container (deployment)
+  # 🔹 Kubectl container
   - name: kubectl
     image: 172.31.42.17:32000/kubectl:1
-    command:
-      - cat
+    command: ['cat']
     tty: true
     workingDir: /home/jenkins/agent
 
+  # 🔹 Trivy container
   - name: trivy
     image: 172.31.42.17:32000/trivy:0.55.0
-    command:
-      - cat
+    command: ['cat']
     tty: true
     workingDir: /home/jenkins/agent
 
+  # 🔹 ZAP container
   - name: zap
     image: 172.31.42.17:32000/zaproxy:stable
-    command:
-      - cat
+    command: ['cat']
     tty: true
     workingDir: /home/jenkins/agent
-  
 
-  # 🔹 Volumes (shared workspace + docker socket)
+  # 🔹 Volumes (MUST be outside containers)
   volumes:
     - name: docker-sock
       hostPath:
