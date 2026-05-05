@@ -6,6 +6,9 @@ metadata:
 
 spec:
   serviceAccountName: jenkins
+  spec:
+  imagePullSecrets:
+    - name: nexus-secret
 
   containers:
 
