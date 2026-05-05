@@ -6,7 +6,7 @@ metadata:
     app: frontend-app
 
 spec:
-  replicas: 2
+  replicas: 1
 
   selector:
     matchLabels:
@@ -20,6 +20,6 @@ spec:
     spec:
       containers:
         - name: frontend-app
-          image: your-docker-repo/frontend-app:latest
+          image: ${IMAGE_TAG}
           ports:
             - containerPort: 80
